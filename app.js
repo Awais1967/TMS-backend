@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import healthRoutes from "./src/Routes/health.routes.js";
+import authRoutes from "./src/Routes/auth.routes.js";
 import { errorHandler, notFoundHandler } from "./src/Middleware/error.middleware.js";
 
 dotenv.config({ quiet: true });
@@ -45,6 +46,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/uploads", express.static(uploadsPath));
 
 app.use("/api/health", healthRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
