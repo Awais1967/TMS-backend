@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { LOAD_STATUSES } from "../Models/Load.js";
+import { LOAD_COVER_STATUSES, LOAD_PRIORITIES, LOAD_STATUSES } from "../Models/Load.js";
 
 const hasValue = (value) => value !== undefined && value !== null && String(value).trim() !== "";
 
@@ -14,6 +14,22 @@ export const isValidLoadId = (id) => mongoose.Types.ObjectId.isValid(String(id |
 export const validateLoadStatus = (status) => {
   if (!LOAD_STATUSES.includes(status)) {
     return `Invalid status. Allowed statuses: ${LOAD_STATUSES.join(", ")}`;
+  }
+
+  return null;
+};
+
+const validateCoverStatus = (coverStatus) => {
+  if (!LOAD_COVER_STATUSES.includes(coverStatus)) {
+    return `Invalid coverStatus. Allowed cover statuses: ${LOAD_COVER_STATUSES.join(", ")}`;
+  }
+
+  return null;
+};
+
+const validatePriority = (priority) => {
+  if (!LOAD_PRIORITIES.includes(priority)) {
+    return `Invalid priority. Allowed priorities: ${LOAD_PRIORITIES.join(", ")}`;
   }
 
   return null;
@@ -48,6 +64,16 @@ export const validateCreateLoad = (payload = {}) => {
     if (statusError) errors.push(statusError);
   }
 
+  if (payload.coverStatus) {
+    const coverStatusError = validateCoverStatus(payload.coverStatus);
+    if (coverStatusError) errors.push(coverStatusError);
+  }
+
+  if (payload.priority) {
+    const priorityError = validatePriority(payload.priority);
+    if (priorityError) errors.push(priorityError);
+  }
+
   return errors;
 };
 
@@ -69,6 +95,16 @@ export const validateUpdateLoad = (payload = {}) => {
   if (payload.status) {
     const statusError = validateLoadStatus(payload.status);
     if (statusError) errors.push(statusError);
+  }
+
+  if (payload.coverStatus) {
+    const coverStatusError = validateCoverStatus(payload.coverStatus);
+    if (coverStatusError) errors.push(coverStatusError);
+  }
+
+  if (payload.priority) {
+    const priorityError = validatePriority(payload.priority);
+    if (priorityError) errors.push(priorityError);
   }
 
   return errors;

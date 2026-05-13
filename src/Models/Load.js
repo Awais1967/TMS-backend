@@ -10,6 +10,9 @@ export const LOAD_STATUSES = [
   "Cancelled",
 ];
 
+export const LOAD_COVER_STATUSES = ["Need Cover", "Covered", "Assigned", "Cancelled"];
+export const LOAD_PRIORITIES = ["Low", "Medium", "High", "Critical"];
+
 const stopSchema = new mongoose.Schema(
   {
     location: { type: String, trim: true, default: "" },
@@ -19,6 +22,41 @@ const stopSchema = new mongoose.Schema(
     contactNumber: { type: String, trim: true, default: "" },
     date: { type: Date, default: null },
     time: { type: String, trim: true, default: "" },
+  },
+  { _id: false }
+);
+
+const assignmentSchema = new mongoose.Schema(
+  {
+    truckId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Truck",
+      default: null,
+    },
+    truckNumber: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    driverName: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    carrierName: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    assignedAt: {
+      type: Date,
+      default: null,
+    },
+    assignedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   { _id: false }
 );
@@ -79,6 +117,35 @@ const loadSchema = new mongoose.Schema(
       enum: LOAD_STATUSES,
       default: "Open",
     },
+    coverStatus: {
+      type: String,
+      enum: LOAD_COVER_STATUSES,
+      default: "Need Cover",
+    },
+    priority: {
+      type: String,
+      enum: LOAD_PRIORITIES,
+      default: "Medium",
+    },
+    requiredEquipment: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    pickupWindow: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    deliveryWindow: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    assignment: {
+      type: assignmentSchema,
+      default: () => ({}),
+    },
     rate: {
       type: Number,
       default: 0,
@@ -129,6 +196,12 @@ loadSchema.pre("validate", function calculateTotalCost(next) {
   const rate = Number(this.rate || 0);
   const additionalCharges = Number(this.additionalCharges || 0);
   this.totalCost = rate + additionalCharges;
+
+  if (!this.coverStatus) {
+    const hasAssignment = Boolean(this.truckNumber && this.driverName);
+    this.coverStatus = hasAssignment ? "Assigned" : "Need Cover";
+  }
+
   next();
 });
 
@@ -136,6 +209,7 @@ loadSchema.index({ createdAt: -1 });
 loadSchema.index({ status: 1, createdAt: -1 });
 loadSchema.index({ customerName: 1 });
 loadSchema.index({ carrierName: 1 });
+loadSchema.index({ coverStatus: 1, priority: 1 });
 
 const Load = mongoose.models.Load || mongoose.model("Load", loadSchema);
 

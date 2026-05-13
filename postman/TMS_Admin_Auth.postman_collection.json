@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "TMS Admin Backend - Auth + Loads + Uploads",
-    "description": "Postman collection for testing TMS Backend foundation, admin auth, core Loads APIs, and multipart document uploads with local/S3 storage fields.",
+    "name": "TMS Admin Backend - Auth + Loads + Uploads + Trucks + Truck Need Cover + Live Tracking + Accounting + Direct Bills + Factoring + Settlement",
+    "description": "Postman collection for testing TMS Backend foundation, admin auth, Loads, Documents, Carriers, Drivers, Trucks, Truck Need Cover, Live Tracking, Accounting, Direct Bills, Factoring, Settlement, and multipart document uploads with local/S3 storage fields.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -77,6 +77,96 @@
     },
     {
       "key": "testLicenseNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "truckId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "truckDocumentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testTruckVehicleNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "trackingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "trackingTruckId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "accountingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "directBillId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "directBillDocumentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "directBillNoteId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testDirectBillInvoiceNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "factoringId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "factoringDocumentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "factoringNoteId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testFactoringInvoiceNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "settlementId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "settlementDocumentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "settlementNoteId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testSettlementNumber",
       "value": "",
       "type": "string"
     }
@@ -2105,6 +2195,3709 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Trucks",
+      "item": [
+        {
+          "name": "GET /api/trucks - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Trucks list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.trucks).to.be.an('array');",
+                  "  if (json.data.trucks.length) {",
+                  "    pm.collectionVariables.set('truckId', json.data.trucks[0]._id);",
+                  "    if (json.data.trucks[0].documents && json.data.trucks[0].documents.length) {",
+                  "      pm.collectionVariables.set('truckDocumentId', json.data.trucks[0].documents[0]._id);",
+                  "    }",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/trucks - Search TRK-1045",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks?search=TRK-1045",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "TRK-1045"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/trucks - Filter Active",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks?status=Active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Active"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/trucks - Filter ELD Tracking",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks?trackingType=ELD%20Tracking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks"
+              ],
+              "query": [
+                {
+                  "key": "trackingType",
+                  "value": "ELD Tracking"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/trucks/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks/{{truckId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks",
+                "{{truckId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/trucks - Create Test Truck",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('testTruckVehicleNumber', 'TRK-POSTMAN-' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create truck returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('truckId', json.data.truck._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driverName\": \"Test Driver\",\n  \"phone\": \"(555) 111-2222\",\n  \"email\": \"test.driver@example.com\",\n  \"vehicleNumber\": \"{{testTruckVehicleNumber}}\",\n  \"equipmentTypes\": [\"Dry Van\"],\n  \"trackingType\": \"GPS Tracking\",\n  \"status\": \"Active\",\n  \"truckType\": \"Volvo VNL\",\n  \"currentLocation\": \"Dallas, TX\",\n  \"licensePlate\": \"TEST-9999\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/trucks/:id - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driverName\": \"Updated Test Driver\",\n  \"currentLocation\": \"Houston, TX\",\n  \"activeLoads\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks/{{truckId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks",
+                "{{truckId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/trucks/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks/{{truckId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks",
+                "{{truckId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/trucks/:id/tracking",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trackingType\": \"ELD Tracking\",\n  \"trackingConfig\": {\n    \"type\": \"ELD Tracking\",\n    \"description\": \"Real-time tracking via ELD device\",\n    \"enabled\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks/{{truckId}}/tracking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks",
+                "{{truckId}}",
+                "tracking"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/trucks/:id/documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documentType",
+                  "value": "Insurance Certificate",
+                  "type": "text"
+                },
+                {
+                  "key": "expiresAt",
+                  "value": "2026-12-31",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "Valid",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Uploaded from Postman",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks/{{truckId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks",
+                "{{truckId}}",
+                "documents"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const docs = json.data.truck.documents || [];",
+                  "  if (docs.length) {",
+                  "    const doc = docs[docs.length - 1];",
+                  "    pm.collectionVariables.set('truckDocumentId', doc._id);",
+                  "    pm.expect(doc.storage).to.be.oneOf(['local', 's3']);",
+                  "    pm.expect(doc.fileUrl).to.be.a('string').and.not.empty;",
+                  "    pm.expect(doc).to.have.property('s3Key');",
+                  "    pm.expect(doc).to.have.property('bucket');",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/trucks/:id/documents/:documentId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks/{{truckId}}/documents/{{truckDocumentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks",
+                "{{truckId}}",
+                "documents",
+                "{{truckDocumentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/trucks/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trucks/{{truckId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trucks",
+                "{{truckId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Truck Need Cover",
+      "item": [
+        {
+          "name": "GET /api/truck-need-cover - Loads",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Truck Need Cover loads returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.loads).to.be.an('array');",
+                  "  if (json.data.loads.length) {",
+                  "    pm.collectionVariables.set('loadId', json.data.loads[0]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/truck-need-cover - Search Walmart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover?search=Walmart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Walmart"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/truck-need-cover - Filter Critical",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover?priority=Critical",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover"
+              ],
+              "query": [
+                {
+                  "key": "priority",
+                  "value": "Critical"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/truck-need-cover - Filter Reefer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover?requiredEquipment=Reefer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover"
+              ],
+              "query": [
+                {
+                  "key": "requiredEquipment",
+                  "value": "Reefer"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/truck-need-cover/available-trucks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover/available-trucks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover",
+                "available-trucks"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Available trucks returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.trucks).to.be.an('array');",
+                  "  if (json.data.trucks.length) {",
+                  "    pm.collectionVariables.set('truckId', json.data.trucks[0]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/truck-need-cover/available-trucks - Filter Reefer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover/available-trucks?equipmentType=Reefer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover",
+                "available-trucks"
+              ],
+              "query": [
+                {
+                  "key": "equipmentType",
+                  "value": "Reefer"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/truck-need-cover/:loadId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover/{{loadId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover",
+                "{{loadId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/truck-need-cover/:loadId/assign",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"truckId\": \"{{truckId}}\",\n  \"carrierName\": \"Swift Transportation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover/{{loadId}}/assign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover",
+                "{{loadId}}",
+                "assign"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(['Covered', 'Assigned']).to.include(json.data.load.coverStatus);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/truck-need-cover/:loadId/assign - Force",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"truckId\": \"{{truckId}}\",\n  \"carrierName\": \"Swift Transportation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover/{{loadId}}/assign?force=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover",
+                "{{loadId}}",
+                "assign"
+              ],
+              "query": [
+                {
+                  "key": "force",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/truck-need-cover/:loadId/priority",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priority\": \"High\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover/{{loadId}}/priority",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover",
+                "{{loadId}}",
+                "priority"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/truck-need-cover/:loadId/unassign",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/truck-need-cover/{{loadId}}/unassign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "truck-need-cover",
+                "{{loadId}}",
+                "unassign"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.load.coverStatus).to.eql('Need Cover');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Live Tracking",
+      "item": [
+        {
+          "name": "GET /api/tracking - Records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Tracking records returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.tracking).to.be.an('array');",
+                  "  if (json.data.tracking.length) {",
+                  "    pm.collectionVariables.set('trackingId', json.data.tracking[0]._id);",
+                  "    pm.collectionVariables.set('trackingTruckId', json.data.tracking[0].truckId);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/tracking - Search TRK-2041",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking?search=TRK-2041",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "TRK-2041"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/tracking - Filter On Time",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking?status=On%20Time",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "On Time"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/tracking - Filter Driver App GPS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking?trackingType=Driver%20App%20GPS",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking"
+              ],
+              "query": [
+                {
+                  "key": "trackingType",
+                  "value": "Driver App GPS"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/tracking/:truckId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking/{{trackingTruckId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking",
+                "{{trackingTruckId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/tracking - Create Test Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"truckId\": \"TRK-9998\",\n  \"driverName\": \"Test Tracking Driver\",\n  \"driverPhone\": \"(555) 999-8888\",\n  \"loadId\": \"#M100081999\",\n  \"currentLocation\": \"Dallas, TX\",\n  \"eta\": \"3h 20m\",\n  \"speed\": 64,\n  \"status\": \"On Time\",\n  \"trackingType\": \"Driver App GPS\",\n  \"routeProgress\": 40,\n  \"pickup\": \"Dallas, TX\",\n  \"delivery\": \"Houston, TX\",\n  \"distance\": \"240 mi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create tracking returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('trackingId', json.data.tracking._id);",
+                  "  pm.collectionVariables.set('trackingTruckId', json.data.tracking.truckId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT /api/tracking/:id - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentLocation\": \"Waco, TX\",\n  \"eta\": \"2h 10m\",\n  \"speed\": 60,\n  \"routeProgress\": 55\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking/{{trackingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking",
+                "{{trackingId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) pm.expect(json.success).to.eql(true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/tracking/:truckId/location",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentLocation\": \"Dallas, TX\",\n  \"speed\": 64,\n  \"eta\": \"3h 20m\",\n  \"mapPoints\": {\n    \"truckLat\": 32.7767,\n    \"truckLng\": -96.7970\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking/{{trackingTruckId}}/location",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking",
+                "{{trackingTruckId}}",
+                "location"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) pm.expect(json.success).to.eql(true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/tracking/:truckId/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Delayed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking/{{trackingTruckId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking",
+                "{{trackingTruckId}}",
+                "status"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) pm.expect(json.success).to.eql(true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/tracking/:truckId/progress",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"routeProgress\": 75,\n  \"eta\": \"2h 10m\",\n  \"distance\": \"120 mi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking/{{trackingTruckId}}/progress",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking",
+                "{{trackingTruckId}}",
+                "progress"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) pm.expect(json.success).to.eql(true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/tracking/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tracking/{{trackingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tracking",
+                "{{trackingId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accounting",
+      "item": [
+        {
+          "name": "GET /api/accounting - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounting",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounting"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Accounting list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.accounting).to.be.an('array');",
+                  "  if (json.data.accounting.length) {",
+                  "    pm.collectionVariables.set('accountingId', json.data.accounting[0]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/accounting - Search Rapid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounting?search=Rapid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounting"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Rapid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/accounting - Filter Pending",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounting?overallStatus=Pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounting"
+              ],
+              "query": [
+                {
+                  "key": "overallStatus",
+                  "value": "Pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/accounting - Filter Open Disputes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounting?disputeStatus=Open",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounting"
+              ],
+              "query": [
+                {
+                  "key": "disputeStatus",
+                  "value": "Open"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/accounting/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounting/{{accountingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounting",
+                "{{accountingId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/accounting/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"overallStatus\": \"Invoiced\",\n  \"customerBillingStatus\": \"Invoiced\",\n  \"carrierPaymentStatus\": \"Approved\",\n  \"disputeStatus\": \"None\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/accounting/{{accountingId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounting",
+                "{{accountingId}}",
+                "status"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.accounting.overallStatus).to.eql('Invoiced');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/accounting/:id/status - Dispute",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Disputed\",\n  \"customerBillingStatus\": \"Disputed\",\n  \"carrierPaymentStatus\": \"Hold\",\n  \"disputeStatus\": \"Open\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/accounting/{{accountingId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounting",
+                "{{accountingId}}",
+                "status"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Direct Bills",
+      "item": [
+        {
+          "name": "GET /api/direct-bills - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Direct bills list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.directBills).to.be.an('array');",
+                  "  if (json.data.directBills.length) {",
+                  "    pm.collectionVariables.set('directBillId', json.data.directBills[0]._id);",
+                  "    if (json.data.directBills[0].documents && json.data.directBills[0].documents.length) {",
+                  "      pm.collectionVariables.set('directBillDocumentId', json.data.directBills[0].documents[0]._id);",
+                  "    }",
+                  "    if (json.data.directBills[0].notes && json.data.directBills[0].notes.length) {",
+                  "      pm.collectionVariables.set('directBillNoteId', json.data.directBills[0].notes[0]._id);",
+                  "    }",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/direct-bills - Search Rapid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills?search=Rapid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Rapid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/direct-bills - Filter Pending Payment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills?paymentStatus=Pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills"
+              ],
+              "query": [
+                {
+                  "key": "paymentStatus",
+                  "value": "Pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/direct-bills - Filter Sent Bills",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills?billStatus=Sent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills"
+              ],
+              "query": [
+                {
+                  "key": "billStatus",
+                  "value": "Sent"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/direct-bills - Filter Open Disputes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills?disputeStatus=Open",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills"
+              ],
+              "query": [
+                {
+                  "key": "disputeStatus",
+                  "value": "Open"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/direct-bills/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/direct-bills - Create Test Direct Bill",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('testDirectBillInvoiceNumber', 'DB-POSTMAN-' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create direct bill returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('directBillId', json.data.directBill._id);",
+                  "  pm.expect(json.data.directBill.totalAmount).to.eql(2850);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadNumber\": \"#M100081999\",\n  \"routeNumber\": \"5000093999\",\n  \"invoiceNumber\": \"{{testDirectBillInvoiceNumber}}\",\n  \"customerName\": \"Test Direct Bill Customer\",\n  \"customerEmail\": \"ap@testcustomer.com\",\n  \"customerPhone\": \"(555) 999-1111\",\n  \"billingAddress\": \"100 Test Street, Dallas, TX\",\n  \"carrierName\": \"Test Carrier\",\n  \"driverName\": \"Test Driver\",\n  \"truckNumber\": \"TRK-9999\",\n  \"pickup\": {\n    \"location\": \"Dallas Warehouse\",\n    \"city\": \"Dallas\",\n    \"state\": \"TX\",\n    \"date\": \"2026-05-15\",\n    \"time\": \"09:00 AM\"\n  },\n  \"delivery\": {\n    \"location\": \"Houston DC\",\n    \"city\": \"Houston\",\n    \"state\": \"TX\",\n    \"date\": \"2026-05-16\",\n    \"time\": \"02:00 PM\"\n  },\n  \"commodity\": \"Electronics\",\n  \"weight\": 12000,\n  \"invoiceDate\": \"2026-05-16\",\n  \"dueDate\": \"2026-06-16\",\n  \"paymentTerms\": \"Net 30\",\n  \"charges\": {\n    \"baseRate\": 2500,\n    \"fuelSurcharge\": 250,\n    \"accessorials\": 100,\n    \"detention\": 0,\n    \"lumper\": 0,\n    \"otherCharges\": 0,\n    \"discount\": 0,\n    \"tax\": 0\n  },\n  \"paidAmount\": 0,\n  \"paymentStatus\": \"Pending\",\n  \"billStatus\": \"Draft\",\n  \"disputeStatus\": \"None\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/direct-bills/:id - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Updated Direct Bill Customer\",\n  \"charges\": {\n    \"baseRate\": 3000,\n    \"fuelSurcharge\": 300,\n    \"accessorials\": 150,\n    \"detention\": 50,\n    \"lumper\": 0,\n    \"otherCharges\": 0,\n    \"discount\": 0,\n    \"tax\": 0\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/direct-bills/:id/payment-status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentStatus\": \"Paid\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/payment-status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "payment-status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/direct-bills/:id/bill-status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"billStatus\": \"Sent\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/bill-status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "bill-status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/direct-bills/:id/payment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paidAmount\": 1500,\n  \"paymentStatus\": \"Partial\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/payment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "payment"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/direct-bills/:id/dispute",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disputeStatus\": \"Open\",\n  \"disputeReason\": \"Customer disputes detention charge\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/dispute",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "dispute"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/direct-bills/:id/documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documentType",
+                  "value": "Invoice",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "Uploaded",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Uploaded from Postman",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "documents"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const docs = json.data.directBill.documents || [];",
+                  "  if (docs.length) {",
+                  "    pm.collectionVariables.set('directBillDocumentId', docs[docs.length - 1]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/direct-bills/:id/notes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Invoice sent to customer.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/notes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "notes"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const notes = json.data.directBill.notes || [];",
+                  "  if (notes.length) {",
+                  "    pm.collectionVariables.set('directBillNoteId', notes[notes.length - 1]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/direct-bills/:id/notes/:noteId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/notes/{{directBillNoteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "notes",
+                "{{directBillNoteId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/direct-bills/:id/documents/:documentId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}/documents/{{directBillDocumentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}",
+                "documents",
+                "{{directBillDocumentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/direct-bills/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direct-bills/{{directBillId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "direct-bills",
+                "{{directBillId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Factoring",
+      "item": [
+        {
+          "name": "GET /api/factoring - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Factoring list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.factoring).to.be.an('array');",
+                  "  if (json.data.factoring.length) {",
+                  "    pm.collectionVariables.set('factoringId', json.data.factoring[0]._id);",
+                  "    if (json.data.factoring[0].documents && json.data.factoring[0].documents.length) {",
+                  "      pm.collectionVariables.set('factoringDocumentId', json.data.factoring[0].documents[0]._id);",
+                  "    }",
+                  "    if (json.data.factoring[0].notes && json.data.factoring[0].notes.length) {",
+                  "      pm.collectionVariables.set('factoringNoteId', json.data.factoring[0].notes[0]._id);",
+                  "    }",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/factoring - Search Rapid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring?search=Rapid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Rapid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/factoring - Filter Pending Payment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring?paymentStatus=Pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring"
+              ],
+              "query": [
+                {
+                  "key": "paymentStatus",
+                  "value": "Pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/factoring - Filter Approved",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring?factoringStatus=Approved",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring"
+              ],
+              "query": [
+                {
+                  "key": "factoringStatus",
+                  "value": "Approved"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/factoring - Filter Missing Documents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring?documentsStatus=Missing",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring"
+              ],
+              "query": [
+                {
+                  "key": "documentsStatus",
+                  "value": "Missing"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/factoring - Filter Apex Capital",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring?factoringCompany=Apex%20Capital",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring"
+              ],
+              "query": [
+                {
+                  "key": "factoringCompany",
+                  "value": "Apex Capital"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/factoring/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/factoring - Create Test Record",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('testFactoringInvoiceNumber', 'FAC-POSTMAN-' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create factoring returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('factoringId', json.data.factoring._id);",
+                  "  pm.expect(json.data.factoring.advanceAmount).to.eql(4500);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadNumber\": \"#M100081999\",\n  \"invoiceNumber\": \"{{testFactoringInvoiceNumber}}\",\n  \"customerName\": \"Test Factoring Customer\",\n  \"carrierName\": \"Test Carrier\",\n  \"carrierEmail\": \"billing@testcarrier.com\",\n  \"carrierPhone\": \"(555) 999-2222\",\n  \"mcNumber\": \"MC-999999\",\n  \"factoringCompany\": \"Apex Capital\",\n  \"factoringCompanyEmail\": \"funding@apexcapital.example\",\n  \"amount\": 5000,\n  \"advanceRate\": 90,\n  \"feePercent\": 2,\n  \"submissionDate\": \"2026-05-20\",\n  \"expectedPaymentDate\": \"2026-05-22\",\n  \"paymentStatus\": \"Pending\",\n  \"factoringStatus\": \"Draft\",\n  \"documentsStatus\": \"Missing\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/factoring/:id - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 6000,\n  \"advanceRate\": 92,\n  \"feePercent\": 2.5,\n  \"factoringCompany\": \"Triumph Business Capital\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/factoring/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"factoringStatus\": \"Approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/factoring/:id/payment-status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentStatus\": \"Funded\",\n  \"paymentDate\": \"2026-05-22\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/payment-status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "payment-status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/factoring/:id/documents-status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentsStatus\": \"Complete\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/documents-status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "documents-status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/factoring/:id/reject",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionReason\": \"Missing signed POD document\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "reject"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/factoring/:id/documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documentType",
+                  "value": "Invoice",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "Uploaded",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Uploaded from Postman",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "documents"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const docs = json.data.factoring.documents || [];",
+                  "  if (docs.length) {",
+                  "    pm.collectionVariables.set('factoringDocumentId', docs[docs.length - 1]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/factoring/:id/notes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Submitted invoice package to factoring company.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/notes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "notes"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const notes = json.data.factoring.notes || [];",
+                  "  if (notes.length) {",
+                  "    pm.collectionVariables.set('factoringNoteId', notes[notes.length - 1]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/factoring/:id/notes/:noteId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/notes/{{factoringNoteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "notes",
+                "{{factoringNoteId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/factoring/:id/documents/:documentId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}/documents/{{factoringDocumentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}",
+                "documents",
+                "{{factoringDocumentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/factoring/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/factoring/{{factoringId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "factoring",
+                "{{factoringId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Settlement",
+      "item": [
+        {
+          "name": "GET /api/settlements - List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlements && body.data.settlements[0];",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents[0] && settlement.documents[0]._id) {",
+                  "  pm.collectionVariables.set(\"settlementDocumentId\", settlement.documents[0]._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes[0] && settlement.notes[0]._id) {",
+                  "  pm.collectionVariables.set(\"settlementNoteId\", settlement.notes[0]._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/settlements?search=Lightning - Search",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements?search=Lightning",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/settlements?status=Approved - Filter Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements?status=Approved",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/settlements?approvalStatus=Pending - Filter Approval",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements?approvalStatus=Pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/settlements?paymentStatus=Pending - Filter Payment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements?paymentStatus=Pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/settlements?documentsStatus=Missing - Filter Documents",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements?documentsStatus=Missing",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/settlements/{{settlementId}} - Detail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/settlements - Create",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"testSettlementNumber\", \"SET-POSTMAN-\" + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadNumber\": \"#M100081999\",\n  \"settlementNumber\": \"{{testSettlementNumber}}\",\n  \"invoiceNumber\": \"INV-100081999\",\n  \"carrierName\": \"Test Carrier\",\n  \"carrierEmail\": \"billing@testcarrier.com\",\n  \"carrierPhone\": \"(555) 999-3333\",\n  \"mcNumber\": \"MC-999999\",\n  \"driverName\": \"Test Driver\",\n  \"truckNumber\": \"TRK-9999\",\n  \"pickup\": \"Dallas, TX\",\n  \"delivery\": \"Houston, TX\",\n  \"settlementDate\": \"2026-05-20\",\n  \"dueDate\": \"2026-06-05\",\n  \"paymentTerms\": \"Net 15\",\n  \"earnings\": {\n    \"linehaul\": 2500,\n    \"fuelSurcharge\": 250,\n    \"accessorials\": 100,\n    \"detention\": 0,\n    \"layover\": 0,\n    \"lumper\": 0,\n    \"otherPay\": 0\n  },\n  \"deductions\": {\n    \"advances\": 0,\n    \"fuelCard\": 100,\n    \"insurance\": 0,\n    \"maintenance\": 0,\n    \"escrow\": 0,\n    \"factoringFee\": 0,\n    \"otherDeductions\": 0\n  },\n  \"paidAmount\": 0,\n  \"status\": \"Draft\",\n  \"approvalStatus\": \"Pending\",\n  \"paymentStatus\": \"Pending\",\n  \"documentsStatus\": \"Missing\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/settlements/{{settlementId}} - Update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carrierName\": \"Updated Test Carrier\",\n  \"earnings\": {\n    \"linehaul\": 3000,\n    \"fuelSurcharge\": 300,\n    \"accessorials\": 150,\n    \"detention\": 50\n  },\n  \"deductions\": {\n    \"fuelCard\": 100,\n    \"insurance\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/settlements/{{settlementId}}/status - Update Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Pending Approval\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/settlements/{{settlementId}}/approval - Update Approval",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approvalStatus\": \"Approved\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/approval",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "approval"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/settlements/{{settlementId}}/payment - Update Payment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paidAmount\": 1500,\n  \"paymentStatus\": \"Partial\",\n  \"paymentMethod\": \"ACH\",\n  \"paymentReference\": \"ACH-123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/payment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "payment"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/settlements/{{settlementId}}/documents-status - Update Documents Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentsStatus\": \"Complete\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/documents-status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "documents-status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/settlements/{{settlementId}}/reject - Reject",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionReason\": \"Incorrect carrier rate on settlement.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "reject"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/settlements/{{settlementId}}/documents - Upload Document",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documentType",
+                  "value": "Settlement Statement",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "Uploaded",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Uploaded from Postman",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "documents"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/settlements/{{settlementId}}/notes - Add Note",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Settlement reviewed and approved.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/notes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "notes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/settlements/{{settlementId}}/notes/{{settlementNoteId}} - Delete Note",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/notes/{{settlementNoteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "notes",
+                "{{settlementNoteId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/settlements/{{settlementId}}/documents/{{settlementDocumentId}} - Delete Document",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "const settlement = body.data && body.data.settlement;",
+                  "if (settlement && settlement._id) {",
+                  "  pm.collectionVariables.set(\"settlementId\", settlement._id);",
+                  "}",
+                  "if (settlement && settlement.documents && settlement.documents.length) {",
+                  "  const document = settlement.documents[settlement.documents.length - 1];",
+                  "  if (document && document._id) pm.collectionVariables.set(\"settlementDocumentId\", document._id);",
+                  "}",
+                  "if (settlement && settlement.notes && settlement.notes.length) {",
+                  "  const note = settlement.notes[settlement.notes.length - 1];",
+                  "  if (note && note._id) pm.collectionVariables.set(\"settlementNoteId\", note._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}/documents/{{settlementDocumentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}",
+                "documents",
+                "{{settlementDocumentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/settlements/{{settlementId}} - Delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  pm.expect(pm.response.json().success).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settlements/{{settlementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settlements",
+                "{{settlementId}}"
+              ]
+            }
+          }
         }
       ]
     }

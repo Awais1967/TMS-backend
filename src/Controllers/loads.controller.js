@@ -33,6 +33,12 @@ const normalizeLoadPayload = (payload = {}) =>
     carrierName: payload.carrierName?.trim(),
     driverName: payload.driverName?.trim(),
     truckNumber: payload.truckNumber?.trim(),
+    coverStatus: payload.coverStatus,
+    priority: payload.priority,
+    requiredEquipment: payload.requiredEquipment?.trim(),
+    pickupWindow: payload.pickupWindow?.trim(),
+    deliveryWindow: payload.deliveryWindow?.trim(),
+    assignment: payload.assignment,
     rate: payload.rate !== undefined ? Number(payload.rate) : undefined,
     additionalCharges:
       payload.additionalCharges !== undefined ? Number(payload.additionalCharges) : undefined,

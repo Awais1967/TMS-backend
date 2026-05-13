@@ -11,7 +11,14 @@
     "seed:loads": "node src/seed/seedLoads.js",
     "seed:documents": "node src/seed/seedDocuments.js",
     "seed:carriers": "node src/seed/seedCarriers.js",
-    "seed:drivers": "node src/seed/seedDrivers.js"
+    "seed:drivers": "node src/seed/seedDrivers.js",
+    "seed:trucks": "node src/seed/seedTrucks.js",
+    "seed:truck-need-cover": "node src/seed/seedTruckNeedCover.js",
+    "seed:tracking": "node src/seed/seedTracking.js",
+    "seed:accounting": "node src/seed/seedAccounting.js",
+    "seed:direct-bills": "node src/seed/seedDirectBills.js",
+    "seed:factoring": "node src/seed/seedFactoring.js",
+    "seed:settlements": "node src/seed/seedSettlements.js"
   },
   "keywords": [],
   "author": "",

@@ -10,6 +10,13 @@ import loadsRoutes from "./src/Routes/loads.routes.js";
 import documentsRoutes from "./src/Routes/documents.routes.js";
 import carriersRoutes from "./src/Routes/carriers.routes.js";
 import driversRoutes from "./src/Routes/drivers.routes.js";
+import trucksRoutes from "./src/Routes/trucks.routes.js";
+import truckNeedCoverRoutes from "./src/Routes/truckNeedCover.routes.js";
+import trackingRoutes from "./src/Routes/tracking.routes.js";
+import accountingRoutes from "./src/Routes/accounting.routes.js";
+import directBillsRoutes from "./src/Routes/directBills.routes.js";
+import factoringRoutes from "./src/Routes/factoring.routes.js";
+import settlementRoutes from "./src/Routes/settlement.routes.js";
 import { errorHandler, notFoundHandler } from "./src/Middleware/error.middleware.js";
 
 dotenv.config({ quiet: true });
@@ -55,6 +62,13 @@ app.use("/api/loads", loadsRoutes);
 app.use("/api/documents", documentsRoutes);
 app.use("/api/carriers", carriersRoutes);
 app.use("/api/drivers", driversRoutes);
+app.use("/api/trucks", trucksRoutes);
+app.use("/api/truck-need-cover", truckNeedCoverRoutes);
+app.use("/api/tracking", trackingRoutes);
+app.use("/api/accounting", accountingRoutes);
+app.use("/api/direct-bills", directBillsRoutes);
+app.use("/api/factoring", factoringRoutes);
+app.use("/api/settlements", settlementRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
