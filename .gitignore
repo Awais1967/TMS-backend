@@ -1,4 +1,12 @@
 node_modules/
+postman/
+postman/TMS_Admin_Auth.postman_collection.json/
 .env
 dist/
 src/Seeders/
+uploads/*
+!uploads/.gitkeep
+!uploads/documents/
+uploads/documents/*
+!uploads/documents/.gitkeep
+postman_collection.json

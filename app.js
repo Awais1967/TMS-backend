@@ -17,6 +17,7 @@ import accountingRoutes from "./src/Routes/accounting.routes.js";
 import directBillsRoutes from "./src/Routes/directBills.routes.js";
 import factoringRoutes from "./src/Routes/factoring.routes.js";
 import settlementRoutes from "./src/Routes/settlement.routes.js";
+import dashboardRoutes from "./src/Routes/dashboard.routes.js";
 import { errorHandler, notFoundHandler } from "./src/Middleware/error.middleware.js";
 
 dotenv.config({ quiet: true });
@@ -69,6 +70,7 @@ app.use("/api/accounting", accountingRoutes);
 app.use("/api/direct-bills", directBillsRoutes);
 app.use("/api/factoring", factoringRoutes);
 app.use("/api/settlements", settlementRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

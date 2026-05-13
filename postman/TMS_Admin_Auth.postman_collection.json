@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "TMS Admin Backend - Auth + Loads + Uploads + Trucks + Truck Need Cover + Live Tracking + Accounting + Direct Bills + Factoring + Settlement",
-    "description": "Postman collection for testing TMS Backend foundation, admin auth, Loads, Documents, Carriers, Drivers, Trucks, Truck Need Cover, Live Tracking, Accounting, Direct Bills, Factoring, Settlement, and multipart document uploads with local/S3 storage fields.",
+    "name": "TMS Admin Backend - Complete MVP",
+    "description": "Postman collection for testing the complete TMS Admin Backend MVP: Foundation, Auth, Loads, Documents, Carriers, Drivers, Trucks, Truck Need Cover, Live Tracking, Accounting, Direct Bills, Factoring, Settlement, Dashboard, and multipart document uploads with local/S3 storage fields.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -5895,6 +5895,379 @@
                 "api",
                 "settlements",
                 "{{settlementId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "GET /api/dashboard/summary - Summary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});",
+                  "pm.test(\"summary has planSummary\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.planSummary).to.be.an(\"object\");",
+                  "});",
+                  "pm.test(\"summary has weeklySales array\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.weeklySales).to.be.an(\"array\");",
+                  "});",
+                  "pm.test(\"summary has topCustomers array\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.topCustomers).to.be.an(\"array\");",
+                  "});",
+                  "pm.test(\"summary has leaderboard array\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.leaderboard).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/summary?startDate=2026-03-01&endDate=2026-03-31 - Summary Date Range",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});",
+                  "pm.test(\"summary has planSummary\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.planSummary).to.be.an(\"object\");",
+                  "});",
+                  "pm.test(\"summary has weeklySales array\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.weeklySales).to.be.an(\"array\");",
+                  "});",
+                  "pm.test(\"summary has topCustomers array\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.topCustomers).to.be.an(\"array\");",
+                  "});",
+                  "pm.test(\"summary has leaderboard array\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.leaderboard).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/summary?startDate=2026-03-01&endDate=2026-03-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/stats - Stats",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/charts - Charts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/charts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "charts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/top-customers - Top Customers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/top-customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "top-customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/leaderboard - Leaderboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/leaderboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "leaderboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/billing - Billing",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/billing",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "billing"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/operations - Operations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"response success is true\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "});",
+                  "pm.test(\"response has data object\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an(\"object\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/operations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "operations"
               ]
             }
           }

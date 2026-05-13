@@ -6,7 +6,7 @@ import { protect, requireAdmin } from "../Middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/login", login);
-router.post("/create-admin", createAdmin);
+router.post("/create-admin", protect, requireAdmin, createAdmin);
 router.get("/me", protect, requireAdmin, me);
 router.post("/logout", protect, requireAdmin, logout);
 
