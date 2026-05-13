@@ -6,6 +6,10 @@ import dotenv from "dotenv";
 
 import healthRoutes from "./src/Routes/health.routes.js";
 import authRoutes from "./src/Routes/auth.routes.js";
+import loadsRoutes from "./src/Routes/loads.routes.js";
+import documentsRoutes from "./src/Routes/documents.routes.js";
+import carriersRoutes from "./src/Routes/carriers.routes.js";
+import driversRoutes from "./src/Routes/drivers.routes.js";
 import { errorHandler, notFoundHandler } from "./src/Middleware/error.middleware.js";
 
 dotenv.config({ quiet: true });
@@ -47,6 +51,10 @@ app.use("/uploads", express.static(uploadsPath));
 
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/loads", loadsRoutes);
+app.use("/api/documents", documentsRoutes);
+app.use("/api/carriers", carriersRoutes);
+app.use("/api/drivers", driversRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "TMS Admin Backend - Auth",
-    "description": "Postman collection for testing TMS Backend foundation and admin auth endpoints.",
+    "name": "TMS Admin Backend - Auth + Loads + Uploads",
+    "description": "Postman collection for testing TMS Backend foundation, admin auth, core Loads APIs, and multipart document uploads with local/S3 storage fields.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -22,6 +22,61 @@
     },
     {
       "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "loadId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "loadNumber",
+      "value": "#M100081561",
+      "type": "string"
+    },
+    {
+      "key": "testLoadNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "documentLoadNumber",
+      "value": "%23M100081561",
+      "type": "string"
+    },
+    {
+      "key": "carrierId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "carrierDriverId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testMcNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "driverId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "driverDocumentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testLicenseNumber",
       "value": "",
       "type": "string"
     }
@@ -290,6 +345,1761 @@
                   "  const json = pm.response.json();",
                   "  pm.expect(json.success).to.be.a('boolean');",
                   "  pm.expect(json.message).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Loads",
+      "item": [
+        {
+          "name": "GET /api/loads - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/loads?page=1&limit=10&sortBy=createdAt&sortOrder=desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Loads list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Loads list has pagination', function () {",
+                  "    pm.expect(json.success).to.eql(true);",
+                  "    pm.expect(json.data.loads).to.be.an('array');",
+                  "    pm.expect(json.data.pagination).to.be.an('object');",
+                  "  });",
+                  "  if (json.data.loads.length) {",
+                  "    pm.collectionVariables.set('loadId', json.data.loads[0]._id);",
+                  "    pm.collectionVariables.set('loadNumber', json.data.loads[0].loadNumber);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/loads - Search Rapid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/loads?search=Rapid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Rapid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/loads - Filter In Transit",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/loads?status=In%20Transit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "In Transit"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/loads/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/loads/{{loadId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads",
+                "{{loadId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/loads/:loadNumber",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/loads/{{loadNumber}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads",
+                "{{loadNumber}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/loads - Create Test Load",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('testLoadNumber', 'LD-POSTMAN-' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create load returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('loadId', json.data.load._id);",
+                  "  pm.collectionVariables.set('loadNumber', json.data.load.loadNumber);",
+                  "  pm.test('Created load has calculated totalCost', function () {",
+                  "    pm.expect(json.data.load.totalCost).to.eql(1600);",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadNumber\": \"{{testLoadNumber}}\",\n  \"customerName\": \"Postman Test Customer\",\n  \"commodity\": \"Electronics\",\n  \"weight\": 12000,\n  \"pickup\": {\n    \"location\": \"Pickup Warehouse\",\n    \"city\": \"Austin\",\n    \"state\": \"TX\",\n    \"contactName\": \"Pickup Contact\",\n    \"contactNumber\": \"555-1000\",\n    \"date\": \"2026-11-01\",\n    \"time\": \"09:00 AM\"\n  },\n  \"delivery\": {\n    \"location\": \"Delivery Warehouse\",\n    \"city\": \"Dallas\",\n    \"state\": \"TX\",\n    \"contactName\": \"Delivery Contact\",\n    \"contactNumber\": \"555-2000\",\n    \"date\": \"2026-11-02\",\n    \"time\": \"02:00 PM\"\n  },\n  \"carrierName\": \"Postman Carrier\",\n  \"driverName\": \"Postman Driver\",\n  \"truckNumber\": \"TRK-POSTMAN\",\n  \"status\": \"Open\",\n  \"rate\": 1500,\n  \"additionalCharges\": 100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/loads",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/loads/:id - Update Test Load",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Postman Updated Customer\",\n  \"rate\": 1700,\n  \"additionalCharges\": 250,\n  \"eta\": \"5:30 PM CDT • 42 mi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/loads/{{loadId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads",
+                "{{loadId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/loads/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Ready for Billing\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/loads/{{loadId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads",
+                "{{loadId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/loads/:id/status - Invalid Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Bad Status\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/loads/{{loadId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads",
+                "{{loadId}}",
+                "status"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Invalid status returns 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/loads/:id - Delete Test Load",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/loads/{{loadId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads",
+                "{{loadId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Delete returns expected status', function () {",
+                  "  pm.expect([200, 401, 404, 503]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/loads - No Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/loads",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "loads"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Loads without token returns 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "GET /api/documents - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Documents list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.documents).to.be.an('array');",
+                  "  pm.expect(json.data.pagination).to.be.an('object');",
+                  "  if (json.data.documents.length) {",
+                  "    pm.collectionVariables.set('documentId', json.data.documents[0]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/documents - Search POD",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents?search=POD",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "POD"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/documents - Filter Clear POD",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents?documentType=POD&status=Clear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents"
+              ],
+              "query": [
+                {
+                  "key": "documentType",
+                  "value": "POD"
+                },
+                {
+                  "key": "status",
+                  "value": "Clear"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/documents/load/:loadNumber",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/load/{{documentLoadNumber}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                "load",
+                "{{documentLoadNumber}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/documents/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{documentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                "{{documentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/documents/upload - PDF",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documentType",
+                  "value": "POD",
+                  "type": "text"
+                },
+                {
+                  "key": "loadNumber",
+                  "value": "#M100081561",
+                  "type": "text"
+                },
+                {
+                  "key": "relatedType",
+                  "value": "load",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Uploaded from Postman",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                "upload"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Upload returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('documentId', json.data.document._id);",
+                  "  pm.expect(json.data.document.storage).to.be.oneOf(['local', 's3']);",
+                  "  pm.expect(json.data.document.fileUrl).to.be.a('string').and.not.empty;",
+                  "  pm.expect(json.data.document).to.have.property('s3Key');",
+                  "  pm.expect(json.data.document).to.have.property('bucket');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/documents/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Received\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{documentId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                "{{documentId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/documents/:id/status - Invalid Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Bad Status\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{documentId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                "{{documentId}}",
+                "status"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Invalid document status returns 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/documents/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{documentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                "{{documentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/documents - No Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Documents without token returns 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Carriers",
+      "item": [
+        {
+          "name": "GET /api/carriers - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Carriers list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.carriers).to.be.an('array');",
+                  "  if (json.data.carriers.length) {",
+                  "    pm.collectionVariables.set('carrierId', json.data.carriers[0]._id);",
+                  "    if (json.data.carriers[0].drivers && json.data.carriers[0].drivers.length) {",
+                  "      pm.collectionVariables.set('carrierDriverId', json.data.carriers[0].drivers[0]._id);",
+                  "    }",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/carriers - Search Swift",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers?search=Swift",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Swift"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200 && json.data.carriers.length) {",
+                  "  pm.collectionVariables.set('carrierId', json.data.carriers[0]._id);",
+                  "  if (json.data.carriers[0].drivers && json.data.carriers[0].drivers.length) {",
+                  "    pm.collectionVariables.set('carrierDriverId', json.data.carriers[0].drivers[0]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/carriers - Filter Active",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers?status=Active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Active"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/carriers/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/carriers - Create Test Carrier",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('testMcNumber', 'MC-POSTMAN-' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create carrier returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('carrierId', json.data.carrier._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carrierName\": \"Postman Carrier\",\n  \"phone\": \"(555) 111-2222\",\n  \"email\": \"postman@carrier.com\",\n  \"mcNumber\": \"{{testMcNumber}}\",\n  \"dotNumber\": \"DOT-POSTMAN\",\n  \"registrationNumber\": \"{{testMcNumber}}\",\n  \"address\": \"100 Test Lane, Dallas, TX\",\n  \"status\": \"Active\",\n  \"driversCount\": 0,\n  \"activeLoads\": 0,\n  \"onTimeRate\": 98\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/carriers/:id - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carrierName\": \"Postman Carrier Updated\",\n  \"activeLoads\": 2,\n  \"onTimeRate\": 99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/carriers/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/carriers/:id/documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documentType",
+                  "value": "Insurance Certificate",
+                  "type": "text"
+                },
+                {
+                  "key": "expiresAt",
+                  "value": "2026-04-15",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "Valid",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Uploaded from Postman",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}",
+                "documents"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const docs = json.data.carrier.documents || [];",
+                  "  const doc = docs[docs.length - 1];",
+                  "  pm.expect(doc.storage).to.be.oneOf(['local', 's3']);",
+                  "  pm.expect(doc.fileUrl).to.be.a('string').and.not.empty;",
+                  "  pm.expect(doc).to.have.property('s3Key');",
+                  "  pm.expect(doc).to.have.property('bucket');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/carriers/:id/drivers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driverName\": \"Postman Driver\",\n  \"phone\": \"(555) 222-3333\",\n  \"email\": \"driver@postman.com\",\n  \"loadNumber\": \"#M100081561\",\n  \"pickup\": \"Nashville, TN\",\n  \"delivery\": \"Coppell, TX\",\n  \"assignedTruck\": \"TRK-POSTMAN\",\n  \"truckType\": \"Dry Van\",\n  \"deliveryDate\": \"2026-12-15\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}",
+                "drivers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const drivers = json.data.carrier.drivers || [];",
+                  "  if (drivers.length) pm.collectionVariables.set('carrierDriverId', drivers[drivers.length - 1]._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/carriers/:id/drivers/:driverId/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Transit\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}/drivers/{{carrierDriverId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}",
+                "drivers",
+                "{{carrierDriverId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/carriers/:id/drivers/:driverId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}/drivers/{{carrierDriverId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}",
+                "drivers",
+                "{{carrierDriverId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/carriers/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers/{{carrierId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers",
+                "{{carrierId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/carriers - No Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/carriers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carriers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Carriers without token returns 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Drivers",
+      "item": [
+        {
+          "name": "GET /api/drivers - List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Drivers list returns expected status', function () {",
+                  "  pm.expect([200, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.drivers).to.be.an('array');",
+                  "  if (json.data.drivers.length) {",
+                  "    pm.collectionVariables.set('driverId', json.data.drivers[0]._id);",
+                  "    if (json.data.drivers[0].documents && json.data.drivers[0].documents.length) {",
+                  "      pm.collectionVariables.set('driverDocumentId', json.data.drivers[0].documents[0]._id);",
+                  "    }",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/drivers - Search Mike",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers?search=Mike",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Mike"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200 && json.data.drivers.length) {",
+                  "  pm.collectionVariables.set('driverId', json.data.drivers[0]._id);",
+                  "  if (json.data.drivers[0].documents && json.data.drivers[0].documents.length) {",
+                  "    pm.collectionVariables.set('driverDocumentId', json.data.drivers[0].documents[0]._id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/drivers - Filter Available",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers?status=Available",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Available"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/drivers/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers/{{driverId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers",
+                "{{driverId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/drivers - Create Test Driver",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('testLicenseNumber', 'DL-POSTMAN-' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create driver returns expected status', function () {",
+                  "  pm.expect([201, 400, 401, 503]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('driverId', json.data.driver._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driverName\": \"Postman Driver\",\n  \"phone\": \"(555) 111-2222\",\n  \"email\": \"driver.postman@example.com\",\n  \"licenseNumber\": \"{{testLicenseNumber}}\",\n  \"licenseExpiry\": \"2026-12-15\",\n  \"availabilityStatus\": \"Available\",\n  \"assignedTruck\": \"TRK-POST\",\n  \"truckType\": \"Dry Van\",\n  \"liveLocation\": \"Dallas, TX\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/drivers/:id - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driverName\": \"Postman Driver Updated\",\n  \"assignedLoads\": 2,\n  \"onTimeRate\": 99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers/{{driverId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers",
+                "{{driverId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/drivers/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availabilityStatus\": \"On Load\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers/{{driverId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers",
+                "{{driverId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/drivers/:id/reassign-truck",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignedTruck\": \"TRK-2031\",\n  \"truckType\": \"Dry Van\",\n  \"assignedTruckDetails\": {\n    \"truckId\": \"TRK-2031\",\n    \"truckType\": \"Freightliner Cascadia - Dry Van\",\n    \"licensePlate\": \"XYZ-2031\",\n    \"status\": \"Active\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers/{{driverId}}/reassign-truck",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers",
+                "{{driverId}}",
+                "reassign-truck"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/drivers/:id/documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documentType",
+                  "value": "Driver License",
+                  "type": "text"
+                },
+                {
+                  "key": "expiresAt",
+                  "value": "2026-12-15",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "Valid",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Uploaded from Postman",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers/{{driverId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers",
+                "{{driverId}}",
+                "documents"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "  const docs = json.data.driver.documents || [];",
+                  "  if (docs.length) {",
+                  "    const doc = docs[docs.length - 1];",
+                  "    pm.collectionVariables.set('driverDocumentId', doc._id);",
+                  "    pm.expect(doc.storage).to.be.oneOf(['local', 's3']);",
+                  "    pm.expect(doc.fileUrl).to.be.a('string').and.not.empty;",
+                  "    pm.expect(doc).to.have.property('s3Key');",
+                  "    pm.expect(doc).to.have.property('bucket');",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/drivers/:id/documents/:documentId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers/{{driverId}}/documents/{{driverDocumentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers",
+                "{{driverId}}",
+                "documents",
+                "{{driverDocumentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/drivers/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers/{{driverId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers",
+                "{{driverId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/drivers - No Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "drivers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Drivers without token returns 401', function () {",
+                  "  pm.response.to.have.status(401);",
                   "});"
                 ]
               }
