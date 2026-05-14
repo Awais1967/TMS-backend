@@ -1,8 +1,10 @@
 import fs from "fs/promises";
+import mongoose from "mongoose";
 
 import asyncHandler from "../Utils/asyncHandler.js";
 import { sendError, sendSuccess } from "../Utils/apiResponse.js";
 import Driver from "../Models/Driver.js";
+import Truck from "../Models/Truck.js";
 import { uploadFile } from "../services/storage.service.js";
 import {
   isValidDriverId,
@@ -118,6 +120,33 @@ const findDriverOrSend = async (id, res) => {
   return driver;
 };
 
+const cleanString = (value) => String(value || "").trim();
+
+const getTruckDisplayNumber = (truck) =>
+  cleanString(truck?.truckNumber) ||
+  cleanString(truck?.vehicleNumber) ||
+  cleanString(truck?.licensePlate);
+
+const findTruckForReassign = async ({ truckId, truckNumber }) => {
+  const cleanTruckId = cleanString(truckId);
+  const cleanTruckNumber = cleanString(truckNumber);
+
+  if (cleanTruckId && mongoose.Types.ObjectId.isValid(cleanTruckId)) {
+    const truck = await Truck.findById(cleanTruckId);
+    if (truck) return truck;
+  }
+
+  if (!cleanTruckNumber) return null;
+
+  return Truck.findOne({
+    $or: [
+      { vehicleNumber: cleanTruckNumber },
+      { truckNumber: cleanTruckNumber },
+      { licensePlate: cleanTruckNumber },
+    ],
+  });
+};
+
 const cleanupUploadedFile = async (file) => {
   if (!file?.path) return;
   await fs.unlink(file.path).catch(() => {});
@@ -226,14 +255,59 @@ export const reassignDriverTruck = asyncHandler(async (req, res) => {
   const driver = await findDriverOrSend(req.params.id, res);
   if (!driver) return null;
 
-  driver.assignedTruck = String(req.body?.assignedTruck || "").trim();
-  driver.truckType = String(req.body?.truckType || "").trim();
+  const requestedTruckNumber =
+    cleanString(req.body?.truckNumber) ||
+    cleanString(req.body?.vehicleNumber) ||
+    cleanString(req.body?.assignedTruck);
+  const truck = await findTruckForReassign({
+    truckId: req.body?.truckId,
+    truckNumber: requestedTruckNumber,
+  });
 
-  if (req.body?.assignedTruckDetails && typeof req.body.assignedTruckDetails === "object") {
-    driver.assignedTruckDetails = req.body.assignedTruckDetails;
+  if (!truck) return sendError(res, "Truck not found", 404);
+
+  const previousTruckNumber = cleanString(driver.assignedTruck);
+  const truckNumber = getTruckDisplayNumber(truck);
+  const truckType = cleanString(truck.truckType) || truck.equipmentTypes?.[0] || cleanString(req.body?.truckType);
+
+  if (!truckNumber) return sendError(res, "Truck number is missing", 400);
+
+  if (previousTruckNumber && previousTruckNumber !== truckNumber) {
+    await Truck.updateOne(
+      {
+        $or: [
+          { vehicleNumber: previousTruckNumber },
+          { truckNumber: previousTruckNumber },
+          { licensePlate: previousTruckNumber },
+        ],
+      },
+      {
+        $set: {
+          driverName: "Unassigned",
+          contactPerson: "",
+          phone: "",
+          email: "",
+        },
+      }
+    );
   }
 
-  await driver.save();
+  driver.assignedTruck = truckNumber;
+  driver.truckType = truckType;
+  driver.assignedTruckDetails = {
+    truckId: String(truck._id),
+    truckType,
+    trailerType: truckType,
+    licensePlate: cleanString(truck.licensePlate),
+    status: cleanString(truck.status),
+  };
+
+  truck.driverName = driver.driverName;
+  truck.contactPerson = driver.driverName;
+  truck.phone = driver.phone;
+  truck.email = driver.email;
+
+  await Promise.all([driver.save(), truck.save()]);
 
   return sendSuccess(res, "Driver truck reassigned successfully", { driver });
 });
