@@ -29,29 +29,43 @@ const uploadsPath = path.join(__dirname, "uploads");
 const app = express();
 
 const normalizeOrigin = (origin) => String(origin || "").replace(/\/$/, "").trim();
-const clientUrl = normalizeOrigin(process.env.CLIENT_URL || "http://localhost:5173");
+const expandOrigin = (origin) => {
+  const normalizedOrigin = normalizeOrigin(origin);
+  if (!normalizedOrigin) return [];
+  if (/^https?:\/\//i.test(normalizedOrigin)) return [normalizedOrigin];
+  return [`https://${normalizedOrigin}`, `http://${normalizedOrigin}`];
+};
+const envOrigins = [
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
+  ...(process.env.CORS_ORIGINS || "").split(","),
+];
 const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  clientUrl,
+  "http://localhost:5174",
+  "https://tms-admin-panel.vercel.app",
+  ...envOrigins.flatMap(expandOrigin),
 ]);
+const corsOptions = {
+  origin(origin, callback) {
+    const normalizedOrigin = normalizeOrigin(origin);
+
+    if (!normalizedOrigin || allowedOrigins.has(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${normalizedOrigin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
 app.disable("x-powered-by");
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      const normalizedOrigin = normalizeOrigin(origin);
-
-      if (!normalizedOrigin || allowedOrigins.has(normalizedOrigin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error(`CORS blocked for origin: ${normalizedOrigin}`));
-    },
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
