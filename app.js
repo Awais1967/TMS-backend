@@ -44,9 +44,6 @@ const envOrigins = [
   ...(process.env.CORS_ORIGINS || "").split(","),
 ];
 const allowedOrigins = new Set([
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "http://localhost:5174",
   "https://tms-admin-panel.vercel.app",
   ...envOrigins.flatMap(expandOrigin),
 ]);
