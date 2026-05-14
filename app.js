@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 import healthRoutes from "./src/Routes/health.routes.js";
 import authRoutes from "./src/Routes/auth.routes.js";
@@ -18,6 +19,7 @@ import directBillsRoutes from "./src/Routes/directBills.routes.js";
 import factoringRoutes from "./src/Routes/factoring.routes.js";
 import settlementRoutes from "./src/Routes/settlement.routes.js";
 import dashboardRoutes from "./src/Routes/dashboard.routes.js";
+import connectDB from "./src/config/db.js";
 import { errorHandler, notFoundHandler } from "./src/Middleware/error.middleware.js";
 
 dotenv.config({ quiet: true });
@@ -27,6 +29,7 @@ const __dirname = path.dirname(__filename);
 const uploadsPath = path.join(__dirname, "uploads");
 
 const app = express();
+let dbConnectionPromise = null;
 
 const normalizeOrigin = (origin) => String(origin || "").replace(/\/$/, "").trim();
 const expandOrigin = (origin) => {
@@ -70,6 +73,25 @@ app.options(/.*/, cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/uploads", express.static(uploadsPath));
+
+app.use(async (req, _res, next) => {
+  if (req.method === "OPTIONS" || req.path === "/api/health") {
+    return next();
+  }
+
+  if (mongoose.connection.readyState === 1) {
+    return next();
+  }
+
+  dbConnectionPromise ||= connectDB().finally(() => {
+    if (mongoose.connection.readyState !== 1) {
+      dbConnectionPromise = null;
+    }
+  });
+
+  app.locals.db = await dbConnectionPromise;
+  return next();
+});
 
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
